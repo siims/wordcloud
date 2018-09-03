@@ -1,0 +1,22 @@
+{
+  "name": "bigfive",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "d3": "^5.7.0",
+    "d3-cloud": "^1.2.5",
+    "lodash": "^4.17.10"
+  }
+}
