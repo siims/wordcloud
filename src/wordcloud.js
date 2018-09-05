@@ -5,11 +5,11 @@ export class WordCloud {
 
     constructor(words) {
         const w = window.innerWidth, h = window.innerHeight;
-        this.fill = scaleOrdinal(schemeCategory10);
-        this.fontSize = scaleSqrt().range([10, 100]).domain([+words[words.length - 1].value || 1, +words[0].value]);
+        this.calculateColorCode = scaleOrdinal(schemeCategory10);
+        this.calculateFontSize = scaleSqrt().range([10, 100]).domain([+words[words.length - 1].value || 1, +words[0].value]);
         this.layout = d3Cloud().timeInterval(Infinity).size([w, h])
             .fontSize((d) => {
-                return this.fontSize(+d.value);
+                return this.calculateFontSize(+d.value);
             })
             .text((d) => {
                 return d.key;
@@ -80,7 +80,7 @@ export class WordCloud {
             return d.font;
         })
             .style("fill", (d) => {
-                return this.fill(d.text.toLowerCase())
+                return this.calculateColorCode(d.text.toLowerCase())
             })
             .text((d) => {
                 return d.text;
