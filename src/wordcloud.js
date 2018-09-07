@@ -1,65 +1,63 @@
-import {scaleOrdinal, schemeCategory10, scaleSqrt, select} from 'd3';
+import {create, scaleOrdinal, scaleSqrt, schemeCategory10} from 'd3';
 import d3Cloud from 'd3-cloud';
 
 export class WordCloud {
 
-    constructor(words) {
-        const w = window.innerWidth, h = window.innerHeight;
-        this.calculateColorCode = scaleOrdinal(schemeCategory10);
-        this.calculateFontSize = scaleSqrt().range([10, 100]).domain([+words[words.length - 1].value || 1, +words[0].value]);
-        this.layout = d3Cloud().timeInterval(Infinity).size([w, h])
+    constructor(words, width, height) {
+        this._width = width;
+        this._height = height;
+        this._calculateColorCode = scaleOrdinal(schemeCategory10);
+        this._calculateFontSize = scaleSqrt().range([10, 100]).domain([+words[words.length - 1].importance || 1, +words[0].importance]);
+        this._layout = d3Cloud().timeInterval(Infinity).size([this._width, this._height])
             .fontSize((d) => {
-                return this.calculateFontSize(+d.value);
+                return this._calculateFontSize(d.importance);
             })
             .text((d) => {
-                return d.key;
+                return d.word;
             })
             .font('impact')
             .spiral('archimedean')
-            .on("end", this.draw);
+            .on("end", this._draw);
 
-        this.svg = select("#vis").append("svg").attr("width", w).attr("height", h);
-        this.vis = this.svg.append("g").attr("transform", "translate(" + [w / 2, h / 2] + ")");
+        this.svg = create("svg").attr("width", this._width).attr("height", this._height);
+        this._svgContent = this.svg.append("g");
 
-        this.layout.words(words);
-        this.layout.start().start();
-
-        this.updateOnToWindowResize();
+        this.update(words);
     }
 
-    updateOnToWindowResize() {
-        if (window.attachEvent) {
-            window.attachEvent('onresize', this.update);
-        }
-        else if (window.addEventListener) {
-            window.addEventListener('resize', this.update);
-        }
-    }
-
-    update = () => {
-        console.log('UPDATE');
-        this.layout.stop().start();
+    getElement = () => {
+        return this.svg._groups[0][0];
     };
 
-    draw = (data, bounds) => {
+    update = (words) => {
+        console.log('UPDATE');
+        this._svgContent.remove();
+        this._svgContent = this.svg.append("g");
+        this._layout.stop();
+        if (words != null) {
+            this._layout.words(words);
+        }
+        this._layout.start().start(); // needs double start for some reason
+    };
+
+    _draw = (data, bounds) => {
         console.log('DRAW', 'data example', data[0], this);
-        let w = window.innerWidth,
-            h = window.innerHeight;
 
-        this.svg.attr("width", w).attr("height", h);
+        this.svg.attr("width", this._width).attr("height", this._height);
 
-        this.scale = bounds ? Math.min(
-            w / Math.abs(bounds[1].x - w / 2),
-            w / Math.abs(bounds[0].x - w / 2),
-            h / Math.abs(bounds[1].y - h / 2),
-            h / Math.abs(bounds[0].y - h / 2)) / 2 : 1;
+        const scale = bounds ? Math.min(
+            this._width / Math.abs(bounds[1].x - this._width / 2),
+            this._width / Math.abs(bounds[0].x - this._width / 2),
+            this._height / Math.abs(bounds[1].y - this._height / 2),
+            this._height / Math.abs(bounds[0].y - this._height / 2)) / 2 : 1;
 
-        let text = this.vis.selectAll("text")
+        this._svgContent.attr("transform", "translate(" + [this._width / 2, this._height / 2] + ")");
+
+        let text = this._svgContent.selectAll("text")
             .data(data, (d) => {
                 return d.text.toLowerCase();
             });
-        text
-            .transition()
+        text.transition()
             .duration(1000)
             .attr("transform", (d) => {
                 return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -80,12 +78,12 @@ export class WordCloud {
             return d.font;
         })
             .style("fill", (d) => {
-                return this.calculateColorCode(d.text.toLowerCase())
+                return this._calculateColorCode(d.text.toLowerCase())
             })
             .text((d) => {
                 return d.text;
             });
 
-        this.vis.transition().attr("transform", "translate(" + [w / 2, h / 2] + ")scale(" + this.scale + ")");
+        this._svgContent.transition().attr("transform", "translate(" + [this._width / 2, this._height / 2] + ")scale(" + scale + ")");
     };
 }

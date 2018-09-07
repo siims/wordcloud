@@ -1,87 +1,48 @@
-import _ from 'lodash';
 import {WordCloud} from "./wordcloud";
+import {Word} from "./Word";
+import jquery from "jquery";
 
-function component() {
-    let element = document.createElement('div');
+const data = [new Word("things", 50), new Word("Cat", 26), new Word("fish", 19),
+    new Word("look", 16), new Word("two", 15), new Word("like", 14),
+    new Word("hat", 14), new Word("Oh", 13), new Word("mother", 12),
+    new Word("One", 12), new Word("Now", 12), new Word("Thing", 12),
+    new Word("house", 10), new Word("fun", 9), new Word("know", 9),
+    new Word("good", 9), new Word("saw", 9), new Word("bump", 8),
+    new Word("hold", 7), new Word("fear", 6), new Word("game", 6),
+    new Word("play", 6), new Word("Sally", 6), new Word("wet", 6),
+    new Word("little", 6), new Word("box", 6), new Word("came", 6),
+    new Word("away", 6), new Word("sit", 5), new Word("ran", 5),
+    new Word("big", 5), new Word("something", 5), new Word("put", 5),
+    new Word("wish", 4), new Word("day", 4), new Word("new", 4),
+    new Word("tricks", 4), new Word("way", 4), new Word("sat", 4),
+    new Word("books", 3), new Word("hook", 3), new Word("mess", 3),
+    new Word("kites", 3), new Word("rake", 3), new Word("red", 3),
+    new Word("shame", 3), new Word("bit", 3), new Word("hands", 3),
+    new Word("gown", 3), new Word("call", 3), new Word("cold", 3),
+    new Word("fall", 3), new Word("milk", 3), new Word("shook", 3),
+    new Word("tame", 2), new Word("deep", 2), new Word("Sank", 2),
+    new Word("head", 2), new Word("back", 2), new Word("fell", 2),
+    new Word("sun", 2), new Word("asked", 1), new Word("shine", 1),
+    new Word("mind", 1), new Word("bite", 1), new Word("step", 1),
+    new Word("mat", 1), new Word("gave", 1), new Word("pat", 1)
+];
 
-    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 
-    return element;
+const wordCloud = new WordCloud(data, window.innerWidth, window.innerHeight);
+let slider = createSlider();
+jquery(slider).on("change", function (event) {
+        wordCloud.update(data.slice(0, event.target.valueAsNumber));
+    }
+);
+jquery("#visualization").append(slider);
+jquery("#visualization").append(wordCloud.getElement());
+
+
+function createSlider() {
+    var newInput = document.createElement("input");
+    newInput.type = "range";
+    newInput.min = 1;
+    newInput.value = data.length;
+    newInput.max = data.length;
+    return newInput;
 }
-
-document.body.appendChild(component());
-
-
-const tags = [{"key": "Cat", "value": 26}, {"key": "fish", "value": 19}, {
-    "key": "things",
-    "value": 50
-}, {"key": "look", "value": 16}, {"key": "two", "value": 15}, {
-    "key": "like",
-    "value": 14
-}, {"key": "hat", "value": 14}, {"key": "Oh", "value": 13}, {
-    "key": "mother",
-    "value": 12
-}, {"key": "One", "value": 12}, {"key": "Now", "value": 12}, {
-    "key": "Thing",
-    "value": 12
-}, {"key": "house", "value": 10}, {"key": "fun", "value": 9}, {
-    "key": "know",
-    "value": 9
-}, {"key": "good", "value": 9}, {"key": "saw", "value": 9}, {
-    "key": "bump",
-    "value": 8
-}, {"key": "hold", "value": 7}, {"key": "fear", "value": 6}, {
-    "key": "game",
-    "value": 6
-}, {"key": "play", "value": 6}, {"key": "Sally", "value": 6}, {
-    "key": "wet",
-    "value": 6
-}, {"key": "little", "value": 6}, {"key": "box", "value": 6}, {
-    "key": "came",
-    "value": 6
-}, {"key": "away", "value": 6}, {"key": "sit", "value": 5}, {
-    "key": "ran",
-    "value": 5
-}, {"key": "big", "value": 5}, {"key": "something", "value": 5}, {
-    "key": "put",
-    "value": 5
-}, {"key": "wish", "value": 4}, {"key": "day", "value": 4}, {
-    "key": "new",
-    "value": 4
-}, {"key": "tricks", "value": 4}, {"key": "way", "value": 4}, {
-    "key": "sat",
-    "value": 4
-}, {"key": "books", "value": 3}, {"key": "hook", "value": 3}, {
-    "key": "mess",
-    "value": 3
-}, {"key": "kites", "value": 3}, {"key": "rake", "value": 3}, {
-    "key": "red",
-    "value": 3
-}, {"key": "shame", "value": 3}, {"key": "bit", "value": 3}, {
-    "key": "hands",
-    "value": 3
-}, {"key": "gown", "value": 3}, {"key": "call", "value": 3}, {
-    "key": "cold",
-    "value": 3
-}, {"key": "fall", "value": 3}, {"key": "milk", "value": 3}, {
-    "key": "shook",
-    "value": 3
-}, {"key": "tame", "value": 2}, {"key": "deep", "value": 2}, {
-    "key": "Sank",
-    "value": 2
-}, {"key": "head", "value": 2}, {"key": "back", "value": 2}, {
-    "key": "fell",
-    "value": 2
-}, {"key": "sun", "value": 2}, {"key": "asked", "value": 1}, {
-    "key": "shine",
-    "value": 1
-}, {"key": "mind", "value": 1}, {"key": "bite", "value": 1}, {
-    "key": "step",
-    "value": 1
-}, {"key": "mat", "value": 1}, {"key": "gave", "value": 1}, {
-    "key": "pat",
-    "value": 1
-}];
-
-
-new WordCloud(tags);
