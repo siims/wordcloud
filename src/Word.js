@@ -3,4 +3,8 @@ export class Word {
         this.word = word;
         this.importance = importance;
     }
+
+    static getWord(wordObject) {
+        return wordObject.word;
+    }
 }

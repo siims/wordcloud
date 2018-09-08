@@ -28,8 +28,9 @@ const data = [new Word("things", 50), new Word("Cat", 26), new Word("fish", 19),
 ];
 
 
-const wordCloud = new WordCloud(data, window.innerWidth, window.innerHeight);
+const wordCloud = new WordCloud(data, 600, 400);
 let slider = createSlider();
+slider.className = "slider";
 jquery(slider).on("change", function (event) {
         wordCloud.update(data.slice(0, event.target.valueAsNumber));
     }
